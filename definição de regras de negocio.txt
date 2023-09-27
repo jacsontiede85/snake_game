@@ -1,0 +1,24 @@
+FUNÇÕES DE CRIAÇÃO
+
+- criar jogo (matriz)
+- criar cobra em posicao fixa considerando logica List de Map
+- criar pixel de comida com posição randomica (não permitir criar em pixels com o corpo da cobra
+
+
+
+FUNÇÕES DE MOVIMENTO
+
+Dentro dessa regra, deve-se criar um loop com a variavel de direção,
+conforme a variavel de direção acionar as respectivas funções abaixo.
+Quando o usuário pessionar as teclas de direção, deve-se mudar o valor dessa variavel de direção que acionará a função correspondente no loop mantendo a direção pressionada em movimento.
+- mover para cima
+- mover para baixo
+- mover para direita
+- mover para esquerda
+
+
+FUNÇÕES DE VALIDAÇÃO
+
+- comer comida (posição do pixel principal = a posição da comida). Nessa função adiciona-se um Map no final da List de Map que representa a cobra
+- lose - nessa função verifica-se derrota a cada movimento do pixel main
+- win - calcula-se a pontuação do jogador, a vitória se dará pelo maximo de pontos alcançados pelo jogador, competição pessoal de maximo de pontos alcançados.
