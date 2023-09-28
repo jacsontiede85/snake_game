@@ -133,10 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               Text(!controller.startGame ? 'Bem vindo ao Snake Game!' : 'Você perdeu!', style: const TextStyle(fontSize: 30, color: Colors.white), textAlign: TextAlign.center,),
                               const SizedBox(height: 20,),
                               ElevatedButton(
-                                onPressed: (){
-                                  controller.youLose = false;
-                                  controller.newGame();
-                                },
+                                onPressed: ()=> controller.newGame(),
                                 child: Text(!controller.startGame ? 'Iniciar jogo' : 'Jogar novamente', style: const TextStyle(fontSize: 14, color: Colors.black),),
                               )
                             ],
