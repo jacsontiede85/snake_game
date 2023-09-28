@@ -25,10 +25,27 @@ mixin _$GameController on GameControllerBase, Store {
     });
   }
 
+  late final _$youLoseAtom =
+      Atom(name: 'GameControllerBase.youLose', context: context);
+
+  @override
+  bool get youLose {
+    _$youLoseAtom.reportRead();
+    return super.youLose;
+  }
+
+  @override
+  set youLose(bool value) {
+    _$youLoseAtom.reportWrite(value, super.youLose, () {
+      super.youLose = value;
+    });
+  }
+
   @override
   String toString() {
     return '''
-jogo: ${jogo}
+jogo: ${jogo},
+youLose: ${youLose}
     ''';
   }
 }

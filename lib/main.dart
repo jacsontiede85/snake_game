@@ -49,58 +49,71 @@ class _MyHomePageState extends State<MyHomePage> {
       focusNode: FocusNode(),
       onKey: (event) async {
         if (event is RawKeyDownEvent) {
-          setState(() {
-            if ( event.isKeyPressed(LogicalKeyboardKey.arrowDown) ) {
-              print('arrowDown');
-              // positionPixel['y'] +=1;
-              // quadro[positionPixel['y']][positionPixel['x']] = pixel;
-            } else if ( event.isKeyPressed(LogicalKeyboardKey.arrowUp) ) {
-              print('arrowUp');
-              // positionPixel['y'] -=1;
-              // quadro[positionPixel['y']][positionPixel['x']] = pixel;
-            }
-
-
-            // else if ( event.isKeyPressed(LogicalKeyboardKey.arrowLeft) ) {
-            //   positionPixel['y'] -=1;
-            //   quadro[positionPixel['x']][positionPixel['y']] = pixel;
-            // } else if ( event.isKeyPressed(LogicalKeyboardKey.arrowRight) ) {
-            //   positionPixel['y'] +=1;
-            //   quadro[positionPixel['x']][positionPixel['y']] = pixel;
-            // }
-          });
+          if ( event.isKeyPressed(LogicalKeyboardKey.arrowDown) ) {
+            controller.direction = 'down';
+          } else if ( event.isKeyPressed(LogicalKeyboardKey.arrowUp) ) {
+            controller.direction = 'up';
+          } else if ( event.isKeyPressed(LogicalKeyboardKey.arrowLeft) ) {
+            controller.direction = 'left';
+          } else if ( event.isKeyPressed(LogicalKeyboardKey.arrowRight) ) {
+            controller.direction = 'right';
+          }
         }
       },
       child: Scaffold(
-        body: Container(
-          color: Colors.amber.shade100,
-          width: size.width,
-          height: size.height,
-          child: ListView(
+          body: Stack(
             children: [
-              Observer(builder: (_)=>
-                  Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      for(var pixels in controller.jogo)
-                        Row(
+              Container(
+                color: Colors.amber.shade100,
+                width: size.width,
+                height: size.height,
+                child: ListView(
+                  children: [
+                    Observer(builder: (_)=>
+                        Column(
                           mainAxisSize: MainAxisSize.max,
                           children: [
-                            for(var v in pixels)
-                              pixel(v),
+                            for(var pixels in controller.jogo)
+                              Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  for(var v in pixels)
+                                    pixel(v),
+                                ],
+                              ),
                           ],
                         ),
-                    ],
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                child: Center(
+                  child: Observer(builder: (_)=>
+                      Visibility(
+                        visible: controller.youLose,
+                        child: Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(Radius.circular(12)),
+                            color: Colors.red,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 5,
+                                spreadRadius: 2,
+                                offset: const Offset(2, 2),
+                              ),
+                            ],
+                          ),
+                          child: const Text('Você perdeu!', style: TextStyle(fontSize: 30, color: Colors.white),),
+                        ),
+                      ),
                   ),
+                ),
               ),
             ],
-          ),
-        ),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: (){},
-        //   tooltip: 'Increment',
-        //   child: const Icon(Icons.add),
-        // ),
+          )
       ),
     );
   }
@@ -112,7 +125,14 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Container(
           width: pixel.larg,
           height: pixel.alt,
-          color: pixel.cor,
+          color: Colors.white,
+          padding: const EdgeInsets.all(0.1),
+          child: Container(
+            width: pixel.larg,
+            height: pixel.alt,
+            color: pixel.cor,
+            padding: const EdgeInsets.all(0.1),
+          ),
         ),
       );
 }

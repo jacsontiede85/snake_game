@@ -30,13 +30,23 @@ abstract class GameControllerBase with Store{
 
   @observable
   ObservableList<ObservableList<Pixel>> jogo = ObservableList<ObservableList<Pixel>>.of([]);
+
   Map positionPixel = {'x': 10, 'y': 10};
 
+  String direction = 'down'; /* down, up, left, right*/
+
+  @observable
+  bool youLose = false;
+
   List<Map> snake = [
-    {'x': 3, 'y': 1},
-    {'x': 3, 'y': 2},
-    {'x': 3, 'y': 3},
-    {'x': 3, 'y': 4},
+    {'x': 5, 'y': 1},
+    {'x': 5, 'y': 2},
+    {'x': 5, 'y': 3},
+    {'x': 5, 'y': 4},
+    {'x': 5, 'y': 5},
+    {'x': 5, 'y': 6},
+    {'x': 5, 'y': 7},
+    {'x': 5, 'y': 8},
   ];
 
   criarJogo(){
@@ -47,18 +57,22 @@ abstract class GameControllerBase with Store{
       }
       jogo.add(pixels);
     }
-
     criarSnake();
-
     onMoveActive();
   }
 
   onMoveActive() async{
     int i=0;
-    while(i<10){
+    while(!youLose){
       print(i);
-      await Future.delayed(const Duration(milliseconds: 500), (){
-        moveDown();
+      await Future.delayed(const Duration(milliseconds: 200), (){
+        switch(direction){
+          case 'up': moveUp(); break;
+          case 'down': moveDown(); break;
+          case 'left': moveLeft(); break;
+          case 'right': moveRight(); break;
+          default: moveDown();
+        }
       });
       i++;
     }
@@ -66,37 +80,55 @@ abstract class GameControllerBase with Store{
 
   criarSnake(){
     for(var pos in snake) {
-      jogo[pos['y']][pos['x']] = Pixel(cor: Colors.red);
+      try{
+        jogo[pos['y']][pos['x']] = Pixel(cor: Colors.purple);
+      }catch(e){
+        youLose =true;
+      }
     }
   }
 
   criarComida(){}
 
-  moveUp(){}
+  moveUp(){
+    print('moveUp');
+    int posX = snake[snake.length-1]['x'];
+    int posY = snake[snake.length-1]['y'];
+    snake.add({'x': posX, 'y': posY-1});
+    jogo[snake[0]['y']][snake[0]['x']] = Pixel(cor: Colors.green);
+    snake.removeAt(0);
+    criarSnake();
+  }
 
   moveDown(){
     print('moveDown');
-    // for(int pos=0; pos<(snake.reversed).length; pos++){
-    //   print('moveDown->pos: $pos');
-    //   if(pos==0)
-    //
-    //   else
-    //     snake[pos]=snake[pos-1];
-    // }
     int posX = snake[snake.length-1]['x'];
     int posY = snake[snake.length-1]['y'];
-    print('posY: $posY');
-    print('posX: $posX');
     snake.add({'x': posX, 'y': posY+1});
     jogo[snake[0]['y']][snake[0]['x']] = Pixel(cor: Colors.green);
     snake.removeAt(0);
     criarSnake();
-    //jogo = jogo;
   }
 
-  moveLeft(){}
+  moveLeft(){
+    print('moveLeft');
+    int posX = snake[snake.length-1]['x'];
+    int posY = snake[snake.length-1]['y'];
+    snake.add({'x': posX-1, 'y': posY});
+    jogo[snake[0]['y']][snake[0]['x']] = Pixel(cor: Colors.green);
+    snake.removeAt(0);
+    criarSnake();
+  }
 
-  moveRigth(){}
+  moveRight(){
+    print('moveRight');
+    int posX = snake[snake.length-1]['x'];
+    int posY = snake[snake.length-1]['y'];
+    snake.add({'x': posX+1, 'y': posY});
+    jogo[snake[0]['y']][snake[0]['x']] = Pixel(cor: Colors.green);
+    snake.removeAt(0);
+    criarSnake();
+  }
 
 
 
