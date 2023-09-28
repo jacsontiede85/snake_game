@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, curly_braces_in_flow_control_structures
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
+      debugShowCheckedModeBanner: false,
       home: const MyHomePage(title: 'Snake Game '),
     );
   }
@@ -43,21 +44,22 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     controller.setSize(size);
+    print(size.width);
+    print(size.height);
 
     return RawKeyboardListener(
       autofocus: true,
       focusNode: FocusNode(),
       onKey: (event) async {
         if (event is RawKeyDownEvent) {
-          if ( event.isKeyPressed(LogicalKeyboardKey.arrowDown) ) {
-            controller.direction = 'down';
-          } else if ( event.isKeyPressed(LogicalKeyboardKey.arrowUp) ) {
-            controller.direction = 'up';
-          } else if ( event.isKeyPressed(LogicalKeyboardKey.arrowLeft) ) {
-            controller.direction = 'left';
-          } else if ( event.isKeyPressed(LogicalKeyboardKey.arrowRight) ) {
-            controller.direction = 'right';
-          }
+          if ( event.isKeyPressed(LogicalKeyboardKey.arrowDown) )
+            controller.setDirection('down');
+          else if ( event.isKeyPressed(LogicalKeyboardKey.arrowUp) )
+            controller.setDirection('up');
+          else if ( event.isKeyPressed(LogicalKeyboardKey.arrowLeft) )
+            controller.setDirection('left');
+          else if ( event.isKeyPressed(LogicalKeyboardKey.arrowRight) )
+            controller.setDirection('right');
         }
       },
       child: Scaffold(
@@ -69,6 +71,22 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: size.height,
                 child: ListView(
                   children: [
+                    Observer(builder: (_)=>
+                        Container(
+                          color: Colors.green.shade900,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(child: Text('Velocidade: ${controller.dificuldade}', textAlign: TextAlign.center, style: const TextStyle(fontSize: 12, color: Colors.white),),),
+                              Expanded(child: Text('Movimentos: ${controller.numMomimentos}', textAlign: TextAlign.center, style: const TextStyle(fontSize: 12, color: Colors.white),),),
+                              Expanded(child: Text('Comidas: ${controller.comidasCapturadas}', textAlign: TextAlign.center, style: const TextStyle(fontSize: 12, color: Colors.white),),),
+                            ],
+                          ),
+                        ),
+                    ),
+
                     Observer(builder: (_)=>
                         Column(
                           mainAxisSize: MainAxisSize.max,
@@ -87,16 +105,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   ],
                 ),
               ),
+
               Positioned(
                 child: Center(
                   child: Observer(builder: (_)=>
                       Visibility(
-                        visible: controller.youLose,
+                        visible: controller.youLose || !controller.startGame,
                         child: Container(
                           padding: const EdgeInsets.all(20),
+                          margin: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.all(Radius.circular(12)),
-                            color: Colors.red,
+                            color: !controller.startGame ? Colors.green : Colors.red,
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withOpacity(0.2),
@@ -106,7 +126,21 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             ],
                           ),
-                          child: const Text('Você perdeu!', style: TextStyle(fontSize: 30, color: Colors.white),),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(!controller.startGame ? 'Bem vindo ao Snake Game!' : 'Você perdeu!', style: const TextStyle(fontSize: 30, color: Colors.white), textAlign: TextAlign.center,),
+                              const SizedBox(height: 20,),
+                              ElevatedButton(
+                                onPressed: (){
+                                  controller.youLose = false;
+                                  controller.newGame();
+                                },
+                                child: Text(!controller.startGame ? 'Iniciar jogo' : 'Jogar novamente', style: const TextStyle(fontSize: 14, color: Colors.black),),
+                              )
+                            ],
+                          )
                         ),
                       ),
                   ),
